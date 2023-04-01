@@ -47,7 +47,7 @@ class OBJECT_OT_add_object(Operator, AddObjectHelper):
 
 def main(self, obj, context):
     # Obtener los puntos de referencia y handlers
-    p = bpy.data.curves[obj.name].splines[0].bezier_points
+    p = bpy.data.curves[obj.data.name].splines[0].bezier_points
     n = self.steps
     # Crear los arreglos de parametros para la superficie
     x01 = [p[2].co[0], p[2].handle_left[0], p[1].handle_right[0], p[1].co[0]]
@@ -80,7 +80,7 @@ def main(self, obj, context):
 
 def borderCheck(obj):
     if obj.type == 'CURVE':
-        p = bpy.data.curves[obj.name].splines[0].bezier_points
+        p = bpy.data.curves[obj.data.name].splines[0].bezier_points
         if len(p) == 4:
             return True
         

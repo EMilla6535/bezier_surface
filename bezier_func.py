@@ -192,8 +192,9 @@ def createBorder():
     # manecillas del reloj. A partir de ahora voy a seguir la numeracion
     # de los puntos como en Blender.
 
-    p = bpy.data.curves[len(bpy.data.curves) - 1].splines[0].bezier_points
-
+    #p = bpy.data.curves[len(bpy.data.curves) - 1].splines[0].bezier_points
+    p = bpy.data.curves[obj.data.name].splines[0].bezier_points
+    
     p[0].handle_left = (p[0].co[0] - 0.5, p[0].co[1] + 0.5, p[0].co[2])
     p[0].handle_right = (p[0].co[0], p[0].co[1] - 0.7, p[0].co[2])
 
