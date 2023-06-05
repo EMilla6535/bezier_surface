@@ -61,7 +61,7 @@ def recalculatePoints(p, mw, loc):
 def main(self, obj, context):
     # Get reference points and handlers
     p = bpy.data.curves[obj.data.name].splines[0].bezier_points
-    n = self.steps
+    n = self.steps + 2
     # Copy original values
     # Note for future versions: use a class
     co_cpy = []
@@ -102,18 +102,15 @@ def main(self, obj, context):
     # Call the function that creates the surface
     s_name = bezier_func.bezierSurface(x, y, z, t_points, obj.location)
     
-    # Delete the border.
-    # Note for future version: make this steps optional if user wants to
-    # preserve the border
+    if self.border:    
+        for i in range(len(p)):
+            p[i].co = co_cpy[i]
+            p[i].handle_left = hl_cpy[i]
+            p[i].handle_right = hr_cpy[i]
+    else:
+        obj.select_set(True)
+        bpy.ops.object.delete(use_global=False)
     
-    # Recover previous values
-    for i in range(len(p)):
-        p[i].co = co_cpy[i]
-        p[i].handle_left = hl_cpy[i]
-        p[i].handle_right = hr_cpy[i]
-    
-    #obj.select_set(True)
-    #bpy.ops.object.delete(use_global=False)
     context.view_layer.objects.active = bpy.data.objects[s_name]
     bpy.data.objects[s_name].select_set(True)
 
@@ -137,7 +134,8 @@ class BezierSurface(bpy.types.Operator):
     bl_label = "Bezier Surface"
     bl_options = {'REGISTER', 'UNDO'}
 
-    steps: bpy.props.IntProperty(name="Steps", default=10, min=3, max=100)
+    steps: bpy.props.IntProperty(name="Steps", default=10, min=1, max=100)
+    border: bpy.props.BoolProperty(name="Keep border", default=True)
 
     def execute(self, context):
         obj = bpy.context.active_object
@@ -154,8 +152,11 @@ class OBJECT_PT_bezier_surface(bpy.types.Panel):
     bl_category = "Tool"
 
     def draw(self, context):
-        props = self.layout.operator('object.bezier_surface')
-        props.steps = 10
+        obj = bpy.context.active_object
+        if borderCheck(obj):
+            props = self.layout.operator('object.bezier_surface')
+            props.steps = 10
+        
 
 
 def menu_func(self, context):
