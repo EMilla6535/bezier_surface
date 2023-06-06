@@ -39,8 +39,14 @@ def renderBlenderData(verts, edges, faces, name, location):
     obj = bpy.data.objects.new(name, mesh)
     obj.location = location
     coll_name = bpy.context.view_layer.active_layer_collection.name
-    col = bpy.data.collections.get(coll_name)
-    col.objects.link(obj)
+    if coll_name == 'Scene Collection':
+        # Attach to Scene Collection
+        bpy.context.scene.collection.objects.link(obj)
+    else:
+        # Get and attach to active collection
+        col = bpy.data.collections.get(coll_name)
+        col.objects.link(obj)
+    
     bpy.context.view_layer.objects.active = obj
     mesh.from_pydata(verts, edges, faces)
     return obj.name
