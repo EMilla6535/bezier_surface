@@ -177,6 +177,10 @@ def bezierSurface(xs, ys, zs, t_points, location):
 
 def createBorder():
     bpy.ops.curve.primitive_bezier_curve_add()
+
+    obj = bpy.context.active_object
+    obj.name = "Surface Border"
+
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.curve.switch_direction()
     bpy.ops.curve.handle_type_set(type='FREE_ALIGN')
@@ -185,8 +189,6 @@ def createBorder():
     bpy.ops.curve.select_all(action='SELECT')
     bpy.ops.curve.make_segment()
     
-    obj = bpy.context.active_object
-
     # Move handlers to a default position
     
     p = bpy.data.curves[obj.data.name].splines[0].bezier_points
